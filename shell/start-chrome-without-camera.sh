@@ -1,0 +1,1 @@
+google-chrome --use-fake-device-for-media-stream --use-file-for-fake-video-capture=/home/sp/Develop/element/example.y4m
