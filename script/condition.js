@@ -1,7 +1,4 @@
 class Condition {
-    private _trigger: Function
-    private _etrigger: Function
-
     Condition() {
         this._trigger = () => {}
         this._etrigger = () => {}
@@ -20,7 +17,7 @@ class Condition {
             this._trigger = () => {
                 resolve(true)
             }
-            this._etrigger = (e: any) => {
+            this._etrigger = (e) => {
                 reject(e)
             }
         })
@@ -30,7 +27,7 @@ class Condition {
                 if(ok){
                     resolve()
                 }else{
-                    reject('timeout')
+                    reject(new Error('timeout'))
                 }
             })
         })
@@ -41,7 +38,7 @@ class Condition {
         this._trigger()
     }
 
-    esignal(e: any) {
+    esignal(e) {
         this._etrigger(e)
     }
 }
