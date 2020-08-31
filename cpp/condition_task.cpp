@@ -1,20 +1,18 @@
 
 
 /**
- *  usage: 
- *   
+ *  usage:
+ *
  */
-#include <mutex>
-#include <vector>
 #include <functional>
 #include <iostream>
+#include <mutex>
+#include <vector>
 
 template <class T>
 class ConditionTask {
-public:
-    ConditionTask() {
-
-    }
+   public:
+    ConditionTask() {}
 
     void go() {
         std::vector<T> tmp;
@@ -25,13 +23,13 @@ public:
             tmp.swap(tasks_);
         }
 
-        for (auto& task : tmp) {
+        for (auto &task : tmp) {
             task();
         }
     }
 
-    void reg(T&& task) {
-        T* tmp = nullptr;
+    void reg(T &&task) {
+        T *tmp = nullptr;
         {
             std::unique_lock<std::mutex> locker(lock_);
             if (going_) {
@@ -45,33 +43,24 @@ public:
             (*tmp)();
         }
     }
-private:
+
+   private:
     bool going_ = false;
     std::mutex lock_;
     std::vector<T> tasks_;
 };
 
-
-
-/* test */
+/******************* test ************************/
 template <class T>
-class Source: public ConditionTask<T> {
-
-
-
-};
+class Source : public ConditionTask<T> {};
 
 int main() {
     Source<std::function<void()>> s;
     ConditionTask<std::function<void()>> c;
-    s.reg([&](){ 
-        std::cout << "callback1" << std::endl;
-    });
+    s.reg([&]() { std::cout << "callback1" << std::endl; });
 
     std::cout << "go" << std::endl;
     s.go();
 
-    s.reg([&](){
-        std::cout << "callback2" << std::endl;
-    });
+    s.reg([&]() { std::cout << "callback2" << std::endl; });
 }
